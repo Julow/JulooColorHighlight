@@ -24,7 +24,7 @@
 		}
 	},
 	{
-		"caption": "Color: Convert to hsl [hsla(H°, S%, L%, A)]",
+		"caption": "Color: Convert to hsl [hsla(H, S, L, A)]",
 		"command": "juloo_color_convert",
 		"args":
 		{

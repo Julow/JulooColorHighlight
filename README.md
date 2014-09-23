@@ -2,7 +2,7 @@
 
 Highlight colors in code
 
-![Commands](/captures/highlight-example.png)
+![ColorHighlight](/captures/highlight-example.png)
 
 ### Convert Colors
 
@@ -42,9 +42,9 @@ There is some commands to convert colors
 
 `0xFFAA443F`
 
-###### HSLA hsla(HHH°, SSS%, LLL%, A.A)
+###### HSLA hsla(HHH, SSS, LLL, A.A)
 
-`hsl(100°, 50%, 50%)`
+`hsl(100, 50, 50)`
 
 `hsla(100, 50, 50, 0.5)`
 
