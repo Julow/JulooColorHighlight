@@ -2,9 +2,13 @@
 
 Highlight colors in code
 
+![Commands](/captures/highlight-example.png)
+
 ### Convert Colors
 
 There is some commands to convert colors
+
+![Commands](/captures/commands-example.png)
 
 ### Installation
 
