@@ -13,25 +13,36 @@ There is some commands to convert colors
 ### Supported colors
 
 ###### RGBA rgba(RRR, GGG, BBB, A.A)
-rgb(50, 150, 200)
-rgba(50, 150, 200, 1)
+
+`rgb(50, 150, 200)`
+
+`rgba(50, 150, 200, 1)`
 
 ###### ARGB argb(AAA, RRR, GGG, BBB)
-argb(255, 50, 150, 200)
+
+`argb(255, 50, 150, 200)`
 
 ###### HEX #RRGGBBAA
-#A98
-#FA98
-#AA9988
-#FFAA9988
+
+`#A98`
+
+`#FA98`
+
+`#AA9988`
+
+`#FFAA9988`
 
 ###### INT 0xAARRGGBB
-0x5599FF
-0xFFAA443F
+
+`0x5599FF`
+
+`0xFFAA443F`
 
 ###### HSLA hsla(HHH°, SSS%, LLL%, A.A)
-hsl(100°, 50%, 50%)
-hsla(100, 50, 50, 0.5)
+
+`hsl(100°, 50%, 50%)`
+
+`hsla(100, 50, 50, 0.5)`
 
 ### License
 
