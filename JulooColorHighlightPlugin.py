@@ -16,12 +16,12 @@ import os, re, sublime, sublime_plugin, colorsys
 # 0xFFAA443F
 #	HSLA	hsla(HHH, SSS, LLL, A.A)
 # hsl(100, 50, 50)
-# hsla(100, 50, 50, 0.5)
+# hsla(100, 50%, 50%, 0.5)
 #
 class Color():
 
 	rgb_regex = re.compile('a?rgba?\( *(\d{1,3}) *, *(\d{1,3}) *, *(\d{1,3}) *(?:, *(\d{0,3}(?:\.\d+)?) *)?\)')
-	hsl_regex = re.compile('hsla?\( *(\d{1,3}) *, *(\d{1,3}) *, *(\d{1,3}) *(?:, *(\d?(?:\.\d+)?) *)?\)')
+	hsl_regex = re.compile('hsla?\( *(\d{1,3}) *, *(\d{1,3})%? *, *(\d{1,3})%? *(?:, *(\d?(?:\.\d+)?) *)?\)')
 	r = 0
 	g = 0
 	b = 0
@@ -104,7 +104,7 @@ class Color():
 
 	def to_hsl(self):
 		c = colorsys.rgb_to_hls(self.r / 255, self.g / 255, self.b / 255)
-		hsl = str(round(c[0] * 360)) +", "+ str(round(c[1] * 100)) +", "+ str(round(c[2] * 100)) +""
+		hsl = str(round(c[0] * 360)) +", "+ str(round(c[1] * 100)) +"%, "+ str(round(c[2] * 100)) +"%"
 		if self.a == 255:
 			return "hsl("+ hsl +")"
 		else:
@@ -168,7 +168,7 @@ class JulooColorConvert(sublime_plugin.TextCommand):
 
 class JulooColorHighlight(sublime_plugin.EventListener):
 
-	color_regex = '(#|0x)[0-9a-fA-F]{8}|(#|0x)[0-9a-fA-F]{6}|#[0-9a-fA-F]{3,4}|(?:a?rgba?\( *\d{1,3} *, *\d{1,3} *, *\d{1,3} *(?:, *\d{0,3}(?:\.\d+)? *)?\))|(?:hsla?\( *\d{1,3} *, *\d{1,3} *, *\d{1,3} *(?:, *\d{0,3}(?:\.\d+)? *)?\))'
+	color_regex = '(#|0x)[0-9a-fA-F]{8}|(#|0x)[0-9a-fA-F]{6}|#[0-9a-fA-F]{3,4}|(?:a?rgba?\( *\d{1,3} *, *\d{1,3} *, *\d{1,3} *(?:, *\d{0,3}(?:\.\d+)? *)?\))|(?:hsla?\( *\d{1,3} *, *\d{1,3}%? *, *\d{1,3}%? *(?:, *\d{0,3}(?:\.\d+)? *)?\))'
 	#xml_location = "Packages/User/JulooColorHighlight/"
 	xml_location = "Packages/JulooColorHighlight/tmThemeCache/"
 	xml_template = """	<dict>

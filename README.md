@@ -46,7 +46,7 @@ There is some commands to convert colors
 
 `hsl(100, 50, 50)`
 
-`hsla(100, 50, 50, 0.5)`
+`hsla(100, 50%, 50%, 0.5)`
 
 ### License
 
