@@ -236,7 +236,7 @@ class JulooColorHighlight(sublime_plugin.EventListener):
 
 	def on_selection_modified_async(self, view):
 		global lastColorRegion, lastColor
-		if view.sel()[0] == self.tmp_sel:
+		if len(view.sel()) == 0 or view.sel()[0] == self.tmp_sel:
 			return;
 		else:
 			self.tmp_sel = view.sel()[0]
