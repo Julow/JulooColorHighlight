@@ -245,6 +245,12 @@ class JulooColorHighlight(sublime_plugin.EventListener):
 			view.erase_status("color_juloo")
 			view.erase_regions("colorhightlight")
 			view.erase_regions("texthightlight")
+			if view.settings().has("old_color_scheme"):
+				view.settings().erase("old_color_scheme")
+				view.settings().erase("color_scheme")
+				full_path = self.get_full_path(self.get_xml_path(view.id()))
+				if os.path.exists(full_path):
+					os.remove(full_path)
 		else:
 			lastColorRegion = region
 			color = Color(view.substr(region))
