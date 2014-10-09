@@ -1,16 +1,15 @@
 import os, re, sublime, sublime_plugin, colorsys
 
-
 #	RGBA	rgba(RRR, GGG, BBB, A.A)
 # rgb(50, 150, 200)
-# rgba(50, 150, 200, 1)
+# rgba(50, 150, 200, 0.5)
 #	ARGB	argb(AAA, RRR, GGG, BBB)
 # argb(255, 50, 150, 200)
 #	HEX		#RRGGBBAA
 # #A98
-# #FA98
+# #A98F
 # #AA9988
-# #FFAA9988
+# #AA9988FF
 #	INT		0xAARRGGBB
 # 0x5599FF
 # 0xFFAA443F
@@ -169,8 +168,7 @@ class JulooColorConvert(sublime_plugin.TextCommand):
 class JulooColorHighlight(sublime_plugin.EventListener):
 
 	color_regex = '(#|0x)[0-9a-fA-F]{8}|(#|0x)[0-9a-fA-F]{6}|#[0-9a-fA-F]{3,4}|(?:a?rgba?\( *\d{1,3} *, *\d{1,3} *, *\d{1,3} *(?:, *\d{0,3}(?:\.\d+)? *)?\))|(?:hsla?\( *\d{1,3} *, *\d{1,3}%? *, *\d{1,3}%? *(?:, *\d{0,3}(?:\.\d+)? *)?\))'
-	#xml_location = "Packages/User/JulooColorHighlight/"
-	xml_location = "Packages/JulooColorHighlight/tmThemeCache/"
+	xml_location = "Packages/julooColorHighlightCache/"
 	xml_template = """	<dict>
 			<key>name</key>
 			<string>colorhighlight</string>
@@ -211,14 +209,15 @@ class JulooColorHighlight(sublime_plugin.EventListener):
 	def get_colored_region(self, view):
 		if len(view.sel()) == 1:
 			sel = view.sel()[0]
+			sel = sublime.Region(sel.end(), sel.end())
 			line = view.line(sel)
-			m = view.line(sel)
-			m.a = m.begin()
-			m.b = m.begin()
+			startPos = max(line.begin(), sel.begin() - 30)
+			endPos = min(sel.end() + 30, line.end())
+			m = sublime.Region(startPos, startPos)
 			max_iteration = 5
 			while max_iteration > 0:
 				m = view.find(self.color_regex, m.end())
-				if m == None or m.end() > line.end():
+				if m == None or m.end() > endPos:
 					break
 				if m.contains(sel):
 					return m
@@ -277,5 +276,5 @@ class JulooColorHighlight(sublime_plugin.EventListener):
 			f.write(data.encode("utf-8"))
 			f.close()
 			view.settings().set("color_scheme", self.get_xml_path(view.id()))
-			view.add_regions("colorhightlight", [region], "juloo.color", "circle", sublime.DRAW_NO_OUTLINE)
+			view.add_regions("colorhightlight", [region], "juloo.color", "circle", sublime.HIDDEN)
 			view.add_regions("texthightlight", [region], "juloo.colortext", "", sublime.DRAW_NO_OUTLINE)
