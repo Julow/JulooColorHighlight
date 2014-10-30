@@ -48,6 +48,12 @@ There is some commands to convert colors
 
 `hsla(100, 50%, 50%, 0.5)`
 
+###### Float Array [R.R, G.G, B.B, A.A]
+
+`[ 0.19607, 0.58823, 0.78431 ]`
+
+`{ 0.19607f, 0.58823f, 0.78431f, 1f }`
+
 ### License
 
 > The MIT License (MIT)

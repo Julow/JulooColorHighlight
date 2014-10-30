@@ -16,11 +16,19 @@ import os, re, sublime, sublime_plugin, colorsys
 #	HSLA	hsla(HHH, SSS, LLL, A.A)
 # hsl(100, 50, 50)
 # hsla(100, 50%, 50%, 0.5)
+#	Float Array	[ R, G, B, A ]
+# [0.55555, 0.1, 0.8, 0.5]
+# {0.55555F, 0.1F, 0.8F, 1F}
 #
+
+float_r = '\s*(0(?:\.[0-9]+)?|1(?:\.0+)?)[fF]?\s*'
+
+rgb_regex = re.compile('a?rgba?\( *(\d{1,3}) *, *(\d{1,3}) *, *(\d{1,3}) *(?:, *(\d{0,3}(?:\.\d+)?) *)?\)')
+hsl_regex = re.compile('hsla?\( *(\d{1,3}) *, *(\d{1,3})%? *, *(\d{1,3})%? *(?:, *(\d?(?:\.\d+)?) *)?\)')
+float_regex = re.compile('(?:\{|\[)'+ float_r +','+ float_r +','+ float_r +'(?:,'+ float_r +')?(?:\}|\])')
+
 class Color():
 
-	rgb_regex = re.compile('a?rgba?\( *(\d{1,3}) *, *(\d{1,3}) *, *(\d{1,3}) *(?:, *(\d{0,3}(?:\.\d+)?) *)?\)')
-	hsl_regex = re.compile('hsla?\( *(\d{1,3}) *, *(\d{1,3})%? *, *(\d{1,3})%? *(?:, *(\d?(?:\.\d+)?) *)?\)')
 	r = 0
 	g = 0
 	b = 0
@@ -29,7 +37,7 @@ class Color():
 
 	def __init__(self, color):
 		if color.find("rgb") == 0:
-			s = re.search(self.rgb_regex, color)
+			s = re.search(rgb_regex, color)
 			(r, g, b, a) = s.groups()
 			self.r = int('0'+ r)
 			self.g = int('0'+ g)
@@ -39,7 +47,7 @@ class Color():
 			else:
 				self.a = int(float('0'+ a) * 255)
 		elif color.find("argb") == 0:
-			s = re.search(self.rgb_regex, color)
+			s = re.search(rgb_regex, color)
 			(a, r, g, b) = s.groups()
 			if b == None:
 				self.valid = False
@@ -49,7 +57,7 @@ class Color():
 				self.b = int('0'+ b)
 				self.a = int('0'+ a)
 		elif color.find("hsl") == 0:
-			s = re.search(self.hsl_regex, color)
+			s = re.search(hsl_regex, color)
 			(h, s, l, a) = s.groups()
 			rgb = colorsys.hls_to_rgb(float('0'+ h) / 360, float('0'+ s) / 100, float('0'+ l) / 100)
 			self.r = int(rgb[0] * 255)
@@ -94,6 +102,16 @@ class Color():
 			self.g = self._htoi(g)
 			self.b = self._htoi(b)
 			self.a = self._htoi(a)
+		elif color.find("{") == 0 or color.find("[") == 0:
+			s = re.search(float_regex, color)
+			(r, g, b, a) = s.groups()
+			self.r = int(float(r) * 255)
+			self.g = int(float(g) * 255)
+			self.b = int(float(b) * 255)
+			if a == None:
+				self.a = 255
+			else:
+				self.a = int(float(a) * 255)
 
 	def _htoi(self, hex):
 		return int(hex, 16)
@@ -167,7 +185,7 @@ class JulooColorConvert(sublime_plugin.TextCommand):
 
 class JulooColorHighlight(sublime_plugin.EventListener):
 
-	color_regex = '(#|0x)[0-9a-fA-F]{8}|(#|0x)[0-9a-fA-F]{6}|#[0-9a-fA-F]{3,4}|(?:a?rgba?\( *\d{1,3} *, *\d{1,3} *, *\d{1,3} *(?:, *\d{0,3}(?:\.\d+)? *)?\))|(?:hsla?\( *\d{1,3} *, *\d{1,3}%? *, *\d{1,3}%? *(?:, *\d{0,3}(?:\.\d+)? *)?\))'
+	color_regex = '(#|0x)[0-9a-fA-F]{8}|(#|0x)[0-9a-fA-F]{6}|#[0-9a-fA-F]{3,4}|(?:a?rgba?\( *\d{1,3} *, *\d{1,3} *, *\d{1,3} *(?:, *\d{0,3}(?:\.\d+)? *)?\))|(?:hsla?\( *\d{1,3} *, *\d{1,3}%? *, *\d{1,3}%? *(?:, *\d{0,3}(?:\.\d+)? *)?\))|(?:\{|\\[)'+ float_r +','+ float_r +','+ float_r +'(?:,'+ float_r +')?(?:\}|\\])'
 	xml_location = "Packages/julooColorHighlightCache/"
 	xml_template = """	<dict>
 			<key>name</key>
