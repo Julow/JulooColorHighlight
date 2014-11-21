@@ -70,7 +70,7 @@ class Color():
 		elif color.find("0x") == 0:
 			length = len(color) - 2
 			if length == 6:
-				(a, r, g, b) = ("00", color[2:4], color[4:6], color[6:8])
+				(a, r, g, b) = ("FF", color[2:4], color[4:6], color[6:8])
 			elif length == 8:
 				(a, r, g, b) = (color[2:4], color[4:6], color[6:8], color[8:])
 			else:
