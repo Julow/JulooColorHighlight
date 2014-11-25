@@ -21,6 +21,8 @@ import os, re, sublime, sublime_plugin, colorsys
 # {0.55555F, 0.1F, 0.8F, 1F}
 #
 
+cache_path = os.path.join(os.path.dirname(os.path.realpath(__file__)), "julooColorHighlightCache/")
+
 float_r = '\s*(0(?:\.[0-9]+)?|1(?:\.0+)?)[fF]?\s*'
 
 rgb_regex = re.compile('a?rgba?\( *(\d{1,3}) *, *(\d{1,3}) *, *(\d{1,3}) *(?:, *(\d{0,3}(?:\.\d+)?) *)?\)')
@@ -186,23 +188,18 @@ class JulooColorConvert(sublime_plugin.TextCommand):
 class JulooColorHighlight(sublime_plugin.EventListener):
 
 	color_regex = '(#|0x)[0-9a-fA-F]{8}|(#|0x)[0-9a-fA-F]{6}|#[0-9a-fA-F]{3,4}|(?:a?rgba?\( *\d{1,3} *, *\d{1,3} *, *\d{1,3} *(?:, *\d{0,3}(?:\.\d+)? *)?\))|(?:hsla?\( *\d{1,3} *, *\d{1,3}%? *, *\d{1,3}%? *(?:, *\d{0,3}(?:\.\d+)? *)?\))|(?:\{|\\[)'+ float_r +','+ float_r +','+ float_r +'(?:,'+ float_r +')?(?:\}|\\])'
-	xml_location = "Packages/julooColorHighlightCache/"
 	xml_template = """	<dict>
-			<key>name</key>
-			<string>colorhighlight</string>
 			<key>scope</key>
 			<string>juloo.color</string>
 			<key>settings</key>
 			<dict>
 				<key>background</key>
-				<string>#000000</string>
+				<string>{0}</string>
 				<key>foreground</key>
 				<string>{0}</string>
 			</dict>
 		</dict>
 		<dict>
-			<key>name</key>
-			<string>colorhighlighttext</string>
 			<key>scope</key>
 			<string>juloo.colortext</string>
 			<key>settings</key>
@@ -219,10 +216,10 @@ class JulooColorHighlight(sublime_plugin.EventListener):
 	tmp_sel = None
 
 	def get_xml_path(self, id):
-		return self.xml_location + str(id) +".tmTheme"
+		return cache_path + str(id) +".tmTheme"
 
 	def get_full_path(self, theme_path):
-		return os.path.join(sublime.packages_path(), os.path.normpath(theme_path[9:]))
+		return os.path.join(sublime.packages_path(), os.path.normpath(theme_path))
 
 	def get_colored_region(self, view):
 		if len(view.sel()) == 1:
@@ -288,11 +285,11 @@ class JulooColorHighlight(sublime_plugin.EventListener):
 			index = data.find("</array>")
 			xml = self.xml_template.format(color.sublime_hex(), color.contrasted_hex())
 			data = data[:index] + xml + data[index:]
-			if not os.path.exists(self.get_full_path(self.xml_location)):
-				os.mkdir(self.get_full_path(self.xml_location))
+			if not os.path.exists(self.get_full_path(cache_path)):
+				os.mkdir(self.get_full_path(cache_path))
 			f = open(self.get_full_path(self.get_xml_path(view.id())), "wb")
 			f.write(data.encode("utf-8"))
 			f.close()
-			view.settings().set("color_scheme", self.get_xml_path(view.id()))
+			view.settings().set("color_scheme", self.get_xml_path(view.id()).replace(sublime.packages_path(), "Packages"))
 			view.add_regions("colorhightlight", [region], "juloo.color", "circle", sublime.HIDDEN)
 			view.add_regions("texthightlight", [region], "juloo.colortext", "", sublime.DRAW_NO_OUTLINE)
