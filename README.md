@@ -1,3 +1,6 @@
+Please use [Juloo-Sublime-Package](https://github.com/Julow/Juloo-Sublime-Package).<br />
+It does more than juste highlight colors.
+
 # JulooColorHighlight
 
 Highlight colors in code
